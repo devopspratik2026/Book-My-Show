@@ -1,5 +1,3 @@
-# Create a new Jenkinsfile or edit existing one
-cat > Jenkinsfile << 'EOF'
 pipeline {
     agent any
     
@@ -51,48 +49,6 @@ pipeline {
                         exit 1
                     fi
                 '''
-            }
-        }
-        
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonar-server') {
-                    withCredentials([string(credentialsId: 'Sonar-token', variable: 'SONAR_TOKEN')]) {
-                        sh '''
-                            echo "Running SonarQube analysis..."
-                            $SCANNER_HOME/bin/sonar-scanner \
-                            -Dsonar.projectName=BMS \
-                            -Dsonar.projectKey=BMS \
-                            -Dsonar.sources=. \
-                            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/** \
-                            -Dsonar.token=$SONAR_TOKEN \
-                            -Dsonar.host.url=http://localhost:9000
-                        '''
-                    }
-                }
-            }
-        }
-        
-        stage('Quality Gate') {
-            steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
-                }
-            }
-        }
-        
-        stage('OWASP Dependency Check') {
-            steps {
-                script {
-                    dependencyCheck additionalArguments: '--scan ./ --format HTML --format JSON', 
-                                   odcInstallation: 'DP-Check'
-                    
-                    publishHTML([
-                        reportDir: '.',
-                        reportFiles: 'dependency-check-report.html',
-                        reportName: 'OWASP Dependency-Check Report'
-                    ])
-                }
             }
         }
         
@@ -207,4 +163,3 @@ pipeline {
         }
     }
 }
-EOF
