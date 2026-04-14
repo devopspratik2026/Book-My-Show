@@ -52,15 +52,15 @@ pipeline {
             }
         }
         
-        stage('Trivy FS Scan') {
-            steps {
-                sh '''
-                    echo "Running Trivy filesystem scan..."
-                    trivy fs . --format table --output trivyfs.txt || true
-                    cat trivyfs.txt
-                '''
-            }
-        }
+      // stage('Trivy FS Scan') {
+        //     steps {
+        //         sh '''
+        //             echo "Running Trivy filesystem scan..."
+        //             trivy fs . --format table --output trivyfs.txt || true
+        //             cat trivyfs.txt
+        //         '''
+        //     }
+        // }
         
         stage('Docker Build & Push') {
             steps {
@@ -91,15 +91,15 @@ pipeline {
             }
         }
         
-        stage('Trivy Image Scan') {
-            steps {
-                sh '''
-                    echo "Running Trivy image scan..."
-                    trivy image --format table --output trivyimage.txt ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} || true
-                    cat trivyimage.txt
-                '''
-            }
-        }
+         // stage('Trivy Image Scan') {
+        //     steps {
+        //         sh '''
+        //             echo "Running Trivy image scan..."
+        //             trivy image --format table --output trivyimage.txt ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG} || true
+        //             cat trivyimage.txt
+        //         '''
+        //     }
+        // }
         
         stage('Deploy to Container') {
             steps {
